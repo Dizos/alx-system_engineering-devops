@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# This script displays listening sockets, their PIDs, and program names
+
+# Display listening TCP and UDP sockets
+echo "Active Internet connections (only servers)"
+ss -tln
+echo "Active UNIX domain sockets (only servers)"
+ss -xln
