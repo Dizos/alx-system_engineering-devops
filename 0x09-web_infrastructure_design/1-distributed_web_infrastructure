@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "
+Explanation:
+www.foobar.com has a web structure with three servers along with a load balancer, HAProxy, using a Round Robin configuration over two servers, which makes it more efficient than a single server. The web server Nginx is located on server 1 along with application files while server 2 has the application server. Server 3 runs MySQL with a Primary-Replica setup for reliability and performance. This kind of configuration allows for better management of the site traffic, provides an alternative source in case of failure, and increases scalability in terms of reads. But it has its drawbacks including a single point of failure, lack of firewalls and HTTPS security, and lack of a dedicated monitoring system.
+
+Link to image:
+https://imgur.com/a/erWw0Db
+"
