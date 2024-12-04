@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "
+Explanation:
+The secure web environment of www.foobar.com integrates three main features for security and monitoring purposes and they include: every server is behind a firewall that limits unauthorized access as well as attacks, traffic over the Internet is encrypted with the help of an SSL certificate, and the clients of Sumologic monitoring gather the performance and health statistics of every server.1 The load balancer is responsible for SSL termination and this allows forwarding of HTTPS protected traffic to the right servers. Even though the advancement in technology brings with it benefits, there are still some possible risks such as SSL termination issue, single point of write with the MySQL database and the uniformity of components on the servers that may affect system performance and resilience as a whole.
+
+Link to image:
+https://imgur.com/a/2IdyUj7
+"
