@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "
+Explanation:
+The basic web stack architecture of the www.foobar.com consists of a server that is made up of five main components: web address space, which is assigned to the server’s IP (8.8.8.8), as well as a friendly web address, web server, Nginx, which accepts HTTP requests and delivers static files, an application server working with dynamic content as well as the business logic, a specific set application files which contain the website source code, as well as employ MySQL for their data storage functionalities. So when the browser calls the website, it looks up the domain name, goes to a server with the specified IP address, and after that the web server dispatches that request to the application server where it looks into the database if requires or manipulates some data. Nevertheless, this particular infrastructure has some drawbacks, such as single point of failure, possible maintenance downtimes or outages, and the fact that all the web traffic and members’ computations are supported by one server only, which renders poor expansibility of the system.
+
+Link to image:
+https://imgur.com/a/WeGZ6Ch
+"
