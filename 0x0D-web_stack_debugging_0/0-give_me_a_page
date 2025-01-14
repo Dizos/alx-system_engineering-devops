@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Script to start Apache server and fix the default page
+
+service apache2 start
+echo "Hello ALX" > /var/www/html/index.html
