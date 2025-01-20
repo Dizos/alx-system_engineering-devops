@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# Configures Nginx with a custom header X-Served-By set to hostname
+
+# Update package lists and install nginx if not already installed
+apt-get update
+apt-get install -y nginx
+
+# Create default nginx directories if they don't exist
+mkdir -p /var/www/html
+mkdir -p /etc/nginx/sites-available/
+mkdir -p /etc/nginx/sites-enabled/
+
+# Create a basic HTML page
+echo "Hello World!" > /var/www/html/index.html
+
+# Create a custom 404 page
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
+# Get the hostname of the server
+HOSTNAME=$(hostname)
+
+# Backup the default nginx configuration file
+if [ -f /etc/nginx/sites-available/default ]; then
+    mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.backup
+fi
+
+# Create new nginx configuration with custom header
+cat > /etc/nginx/sites-available/default << EOF
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+    server_name _;
+    add_header X-Served-By $HOSTNAME;
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+    location /redirect_me {
+        return 301 https://youtube.com/;
+    }
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
+    }
+}
+EOF
+
+# Create symbolic link if it doesn't exist
+if [ ! -f /etc/nginx/sites-enabled/default ]; then
+    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+fi
+
+# Remove default symbolic link if it exists
+if [ -f /etc/nginx/sites-enabled/default ]; then
+    rm /etc/nginx/sites-enabled/default
+fi
+
+# Create new symbolic link
+ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Test Nginx configuration
+nginx -t
+
+# Restart Nginx service
+service nginx restart
