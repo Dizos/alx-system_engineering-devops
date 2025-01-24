@@ -6,12 +6,27 @@ get_subdomain_info() {
     local domain="$1"
     local subdomain="$2"
     
-    # Use dig to retrieve DNS record information and process with awk
-    dig "$subdomain.$domain" | awk '/ANSWER SECTION:/ {
-        getline
-        split($0, parts, " ")
-        print "The subdomain " subdomain " is a " parts[4] " record and points to " parts[5]
-    }'
+    # Use dig to retrieve DNS record information
+    local result
+    result=$(dig "$subdomain.$domain" | awk '
+        /ANSWER SECTION:/ {
+            getline
+            if ($0 ~ /IN/) {
+                print $4 " " $5
+            }
+        }
+    ')
+    
+    # Check if result is empty
+    if [ -z "$result" ]; then
+        return 1
+    fi
+    
+    # Parse result into record type and destination
+    read -r record_type destination <<< "$result"
+    
+    # Print formatted output
+    printf "The subdomain %s is a %s record and points to %s\n" "$subdomain" "$record_type" "$destination"
 }
 
 # Main script logic
@@ -19,13 +34,19 @@ main() {
     local domain="$1"
     local subdomain="$2"
     
+    # Validate domain argument
+    if [ $# -lt 1 ]; then
+        echo "Usage: $0 <domain> [subdomain]"
+        exit 1
+    fi
+    
     # If no specific subdomain is provided, check default subdomains
     if [ -z "$subdomain" ]; then
         # Check subdomains in the specified order
-        get_subdomain_info "$domain" "www"
-        get_subdomain_info "$domain" "lb-01"
-        get_subdomain_info "$domain" "web-01"
-        get_subdomain_info "$domain" "web-02"
+        local subdomains=("www" "lb-01" "web-01" "web-02")
+        for sub in "${subdomains[@]}"; do
+            get_subdomain_info "$domain" "$sub"
+        done
     else
         # Check only the specified subdomain
         get_subdomain_info "$domain" "$subdomain"
