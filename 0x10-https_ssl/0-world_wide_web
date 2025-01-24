@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# This script audits domain subdomains and displays their DNS records
+
+# Function to get subdomain information
+get_subdomain_info() {
+    local domain="$1"
+    local subdomain="$2"
+    
+    # Use dig to retrieve DNS record information and process with awk
+    dig "$subdomain.$domain" | awk '/ANSWER SECTION:/ {
+        getline
+        split($0, parts, " ")
+        print "The subdomain " subdomain " is a " parts[4] " record and points to " parts[5]
+    }'
+}
+
+# Main script logic
+main() {
+    local domain="$1"
+    local subdomain="$2"
+    
+    # If no specific subdomain is provided, check default subdomains
+    if [ -z "$subdomain" ]; then
+        # Check subdomains in the specified order
+        get_subdomain_info "$domain" "www"
+        get_subdomain_info "$domain" "lb-01"
+        get_subdomain_info "$domain" "web-01"
+        get_subdomain_info "$domain" "web-02"
+    else
+        # Check only the specified subdomain
+        get_subdomain_info "$domain" "$subdomain"
+    fi
+}
+
+# Call main function with script arguments
+main "$@"
