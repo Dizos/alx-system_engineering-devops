@@ -16,21 +16,24 @@ def export_to_json(employee_id):
     """
     base_url = "https://jsonplaceholder.typicode.com"
     
-    # Get employee info
-    user_response = requests.get(f"{base_url}/users/{employee_id}")
+    # Get employee info - specific user endpoint
+    user_url = f"{base_url}/users/{employee_id}"
+    user_response = requests.get(user_url)
     if user_response.status_code != 200:
         return
     
     user_data = user_response.json()
     username = user_data.get('username')
     
-    # Get employee's tasks
-    todos_response = requests.get(f"{base_url}/todos",
-                                params={'userId': employee_id})
+    # Get ALL tasks for this specific user
+    todos_url = f"{base_url}/todos"
+    todos_response = requests.get(todos_url)
     if todos_response.status_code != 200:
         return
     
-    todos_data = todos_response.json()
+    # Filter tasks for specific user
+    todos_data = [todo for todo in todos_response.json() 
+                 if todo.get('userId') == employee_id]
     
     # Format tasks according to requirements
     tasks_list = []
@@ -45,7 +48,7 @@ def export_to_json(employee_id):
     # Create JSON object with required format
     json_data = {str(employee_id): tasks_list}
     
-    # Export to JSON file with specific formatting
+    # Export to JSON file
     filename = f"{employee_id}.json"
     with open(filename, 'w') as json_file:
         json.dump(json_data, json_file, separators=(',', ':'))
