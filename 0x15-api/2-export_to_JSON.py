@@ -45,10 +45,10 @@ def export_to_json(employee_id):
     # Create JSON object with required format
     json_data = {str(employee_id): tasks_list}
     
-    # Export to JSON file
+    # Export to JSON file with specific formatting
     filename = f"{employee_id}.json"
     with open(filename, 'w') as json_file:
-        json.dump(json_data, json_file)
+        json.dump(json_data, json_file, separators=(',', ':'))
 
 
 if __name__ == "__main__":
